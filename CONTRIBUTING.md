@@ -263,37 +263,159 @@ Back to Step 1 for the next task.
 
 ## 4. Adding a data source
 
-Showing data from different sources is the core of this project. Each data source is **one Python file**
-in `src/capstone/sources/`. The file describes the dataset (provider, resolution, update frequency, status …)
-and says how to draw it on the map. You don't need a notebook for this. Notebooks are optional, for analysis.
+Showing data from different sources is the core of this project. This section explains how the code is organised,
+walks through a complete example, and then lists the steps to add your own source.
+**You don't need a notebook for this.** Notebooks are optional, for people who want to do extra analysis.
 
-1. Create a feature branch, for example `feature/drought-monitor-source` (see section 3).
-2. Copy the template and give the copy a short name:
+### 4.1 The idea: one file per dataset
+
+Every dataset we show has its own Python file in `src/capstone/sources/`. For example, `imerg_monthly.py` is NASA's
+monthly precipitation data. Each file has exactly two parts:
+
+1. **A description of the dataset** (called `SOURCE`): who publishes it, where to find it, how we access it,
+   its resolution, how often it is updated, its status and its license.
+   This is what we learned about the dataset, written down in a fixed format.
+2. **A drawing function** (called `add_to_map`): the code that gets the data and puts it on the map.
+
+You never have to touch the website pages themselves. The map page and the **Data sources** page are built
+automatically from these files.
+
+### 4.2 How the pieces fit together
+
+```
+src/capstone/sources/imerg_monthly.py   ← 1. You write this file: the description + the drawing function
+              │
+              │  is added to the list of all sources in
+              ▼
+src/capstone/sources/__init__.py        ← 2. "Registering": one line, so the website knows your source exists
+              │
+              │  is picked (by its id) for one or more use cases in
+              ▼
+src/capstone/topics.py                  ← 3. Which sources each use case (Agriculture, Droughts, El Niño) shows
+              │
+              ▼
+Website: map page (index.qmd)  +  Data sources page (sources.qmd)   ← built automatically, nothing to edit
+```
+
+Two words used below:
+
+- **id**: a short, unique name for your source, written in lowercase without spaces, for example `imerg_monthly`.
+  It's how `topics.py` refers to your source.
+- **Registering**: adding your source to the list in `src/capstone/sources/__init__.py`. A source that isn't
+  registered is ignored by the website.
+
+### 4.3 A complete example: `imerg_monthly.py`
+
+This is the first real-data source, NASA's IMERG monthly precipitation, downloaded with `earthaccess`.
+Here it is with explanations:
+
+```python
+MONTH = "2023-12"  # which month to show: the winter of the strong 2023/24 El Niño
+
+
+# Part 2: the drawing function. The website calls it to put the data on the map.
+#   m    = the map to draw on
+#   show = True if the layer should be switched on when the map opens
+def add_to_map(m, show):
+    # Search NASA Earthdata and download the file (only the first time, then it's reused from data/raw/)
+    [path] = earthdata.download("GPM_3IMERGM", "07", temporal=(f"{MONTH}-01", f"{MONTH}-28"))
+
+    # Open the file and take the variable we want
+    with xr.open_dataset(path, engine="h5netcdf", group="Grid") as ds:
+        precip = ds["precipitation"].isel(time=0) * 24  # mm/hour -> mm/day
+
+    # Draw it as a coloured image over the US, with a colour legend
+    earthdata.add_raster(m, precip, name=f"Precipitation, monthly mean {MONTH} (IMERG)",
+                         caption="Precipitation (mm/day)", cmap="Blues", vmin=0, vmax=8, show=show)
+
+
+# Part 1: the description. It appears on the Data sources page and in the table under each map.
+SOURCE = Source(
+    id="imerg_monthly",                                    # the short name used in topics.py
+    name="GPM IMERG Final Precipitation L3 Monthly (GPM_3IMERGM v07)",
+    provider="NASA GES DISC",
+    url="https://disc.gsfc.nasa.gov/datasets/GPM_3IMERGM_07/summary",
+    access="earthaccess (NASA Earthdata login)",
+    spatial_resolution="0.1° (~10 km)",
+    temporal_coverage="1998–present, monthly",
+    update_frequency="Monthly, ~3–4 months delay",
+    status="Active",
+    license="NASA open data. Cite: Huffman et al., GPM IMERG Final Precipitation L3 Monthly, V07, GES DISC",
+    add_to_map=add_to_map,                                 # connects the description to the drawing function
+)
+```
+
+It is registered in `src/capstone/sources/__init__.py`:
+
+```python
+from capstone.sources import gibs_imerg_rate, gibs_landsat, imerg_monthly
+...
+        imerg_monthly.SOURCE,
+```
+
+And it is used in two topics in `src/capstone/topics.py`:
+
+```python
+Topic(
+    name="El Niño",
+    sources=["imerg_monthly", "gibs_imerg_rate"],   # drawn on the El Niño map
+    shown=["imerg_monthly"],                         # switched on when the map opens
+    ...
+),
+```
+
+Look at `gibs_landsat.py` too. It's the simplest kind of source: the drawing function only passes a tile URL to folium.
+
+### 4.4 Step by step: add your own source
+
+1. **Create a feature branch**, for example `feature/drought-monitor-source` (see section 3).
+2. **Copy the template** and give the copy a short name. The file name usually matches the id:
    ```bash
    cp src/capstone/sources/_template.py src/capstone/sources/usdm_drought.py
    ```
-3. Fill in the `SOURCE = Source(...)` part at the bottom. These details appear on the website's
-   **Data sources** page, so write down what you learned about the dataset:
-   how you accessed it, its resolution, how often it is updated and whether it is at risk.
-4. Fill in `add_to_map`. The template shows four patterns. Pick the one that matches how the provider publishes the data:
-   - **A) Map tiles**: the provider offers a tile URL. This is the easiest: just give folium the URL.
-     See `gibs_landsat.py` for an example.
-   - **B) WMS service**: common for USDA, NOAA and USGS. Give folium the service URL and layer name.
-   - **C) Vector files** (GeoJSON, shapefiles): load with geopandas and draw the shapes.
-   - **D) NASA Earthdata**: download with `earthaccess`, open with xarray, draw as a coloured image.
-     See `imerg_monthly.py` for an example. This needs your Earthdata login (section 2.7).
-5. Register the source: open `src/capstone/sources/__init__.py`, import your file and add `your_file.SOURCE` to the list.
-6. Show it on a map: open `src/capstone/topics.py` and add your source's `id` to the `sources` list of
-   one or more topics. Add it to `shown` as well if it should be switched on when the map opens.
-7. Check it with `quarto preview`: your layer should be on the map, and your dataset on the **Data sources** page.
-8. Commit, push and open a pull request (section 3, steps 5–7).
+3. **Fill in the description** (`SOURCE = Source(...)` at the bottom of the file). See section 4.6 for what to write in `status`.
+4. **Fill in the drawing function** (`add_to_map`). Pick the pattern from the template that matches how the
+   provider publishes the data (see section 4.5), and delete the other patterns.
+5. **Register it** in `src/capstone/sources/__init__.py`: add your file to the `import` line and
+   `usdm_drought.SOURCE,` to the list.
+6. **Add it to one or more topics** in `src/capstone/topics.py`: put its id in `sources`, and also in `shown`
+   if it should be switched on when the map opens.
+7. **Check it**: run `quarto preview`. Your layer should appear in the layer box at the top right of the map,
+   and your dataset on the **Data sources** page.
+8. **Commit, push and open a pull request** (section 3, steps 5–7).
 
-**Good to know**
+### 4.5 Which drawing pattern should I use?
 
-- Downloaded files go into `data/raw/`, which Git ignores. Each file is downloaded only once.
-- If you build the website without an Earthdata login, the Earthdata layers are left out and the page shows
-  a warning. Nothing breaks.
-- Need a new library? Add it to `environment.yml` (see section 6).
+| How the provider publishes the data | Pattern in `_template.py` | Example file | Data values? |
+|---|---|---|---|
+| Map tiles (a URL with `{z}/{x}/{y}` in it) | **A) Map tiles** | `gibs_landsat.py` | No, only images |
+| WMS service (common for USDA, NOAA and USGS) | **B) WMS service** | — | No, only images |
+| Vector files: GeoJSON, shapefile (e.g. state or county areas) | **C) Vector files** | — | Yes |
+| NASA Earthdata (NetCDF/HDF5 files, needs login) | **D) NASA Earthdata** | `imerg_monthly.py` | Yes |
+
+Patterns A and B are the quickest, because the provider has already made the images. With C and D you have the
+real values, so you can also select a region, compute averages or compare years.
+
+### 4.6 What to write in `status`
+
+Our project is also about whether public data stays available, so `status` matters. Use one of these words,
+with details in `notes`:
+
+- **Active**: maintained and updated as described.
+- **At risk**: affected by funding cuts or announced changes, or not updated for longer than expected.
+- **Migrating**: moving to a new website, format or access method. Write the date and the new location in `notes`.
+- **Discontinued**: no longer updated or available. Write since when in `notes`.
+
+Use `notes` also for anything that surprised you: broken links, login problems, confusing documentation, format quirks.
+
+### 4.7 Good to know
+
+- **Downloads** go into `data/raw/`, which Git ignores. Each file is downloaded only once.
+- **No login, no problem.** If the website is built on a computer without an Earthdata login, the Earthdata
+  layers are left out and the page shows a warning instead of failing.
+- **Placeholders**: the markers and circles labelled "example placeholders" in `topics.py` are not real data.
+  Once a topic has real sources, delete its `examples`.
+- **New library?** Add it to `environment.yml` (see section 6).
 
 ## 5. Reviewing a pull request
 
