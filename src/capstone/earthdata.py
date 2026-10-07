@@ -1,6 +1,6 @@
 """Helpers for NASA Earthdata via the earthaccess library.
 
-Downloading needs a free Earthdata login, stored in the `.env` file (see CONTRIBUTING.md, "Earthdata login").
+Downloading needs a free Earthdata login, stored in the `.env` file (see CONTRIBUTING.md, section 2.4).
 Files are kept in data/raw/, so each file is only downloaded once.
 
 Check that your login works with:  python -m capstone.earthdata
@@ -36,7 +36,7 @@ def login() -> None:
         except earthaccess.exceptions.LoginStrategyUnavailable:
             continue
     raise EarthdataLoginMissing(
-        "No NASA Earthdata login found. See CONTRIBUTING.md, section 'Earthdata login'."
+        "No NASA Earthdata login found. See CONTRIBUTING.md, section 2.4."
     )
 
 

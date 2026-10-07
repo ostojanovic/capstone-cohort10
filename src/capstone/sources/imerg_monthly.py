@@ -1,7 +1,7 @@
 """IMERG monthly precipitation, downloaded from NASA Earthdata with earthaccess.
 
 Example of a source with real data values: we download the file, select the US and draw it as a coloured image.
-Needs an Earthdata login (see CONTRIBUTING.md, "Earthdata login").
+Needs an Earthdata login (see CONTRIBUTING.md, section 2.4).
 """
 
 import folium

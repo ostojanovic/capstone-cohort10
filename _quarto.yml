@@ -1,6 +1,10 @@
 project:
   type: website
   output-dir: _site
+  render:            # which files become website pages
+    - "*.qmd"
+    - "*.ipynb"
+    - "!CONTRIBUTING.md"
 
 website:
   title: "US Agriculture & Climate Data Map"

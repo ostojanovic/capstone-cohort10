@@ -1,7 +1,7 @@
 """TEMPLATE for a new data source. Copy this file, rename it (e.g. `usdm_drought.py`) and fill it in.
 
 Then register it in `sources/__init__.py` and add its id to a topic in `topics.py`.
-See CONTRIBUTING.md, "Adding a data source", for the step-by-step guide.
+See README.md in this folder for the step-by-step guide.
 """
 
 import folium
