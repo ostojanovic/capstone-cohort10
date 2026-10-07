@@ -7,7 +7,7 @@ name = "capstone"
 version = "0.1.0"
 description = "Climatebase Fellowship Cohort 10 capstone: US public datasets on agriculture, droughts and El Niño"
 requires-python = ">=3.11"
-dependencies = ["folium", "ipython"]
+dependencies = ["earthaccess", "folium", "ipython", "matplotlib", "numpy", "python-dotenv", "xarray"]
 
 [tool.setuptools.packages.find]
 where = ["src"]
