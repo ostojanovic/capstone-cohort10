@@ -8,6 +8,8 @@ website:
     left:
       - href: index.qmd
         text: Map
+      - href: sources.qmd
+        text: Data sources
       - href: blog/index.qmd
         text: Blog
       - href: about.qmd

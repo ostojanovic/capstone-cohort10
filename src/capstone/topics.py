@@ -1,16 +1,17 @@
-"""The three research topics shown on the map page.
+"""The three use cases shown on the map page, and which data sources each one uses.
 
-Markers and shapes are illustrative placeholders, not real data. Replace each
-topic's `features` function with layers built from the actual datasets.
+The markers and shapes in `examples` are illustrative placeholders, not real data.
+Remove them once a topic has real data sources.
 """
 
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from typing import Callable
 
 import folium
 from IPython.display import Markdown, display
 
-from capstone import layers
+from capstone.earthdata import EarthdataLoginMissing
+from capstone.sources import SOURCES
 
 US_CENTER = (39.5, -98.35)
 
@@ -18,18 +19,18 @@ US_CENTER = (39.5, -98.35)
 @dataclass
 class Topic:
     name: str
-    color: str
-    sources: list[str]
-    default_layer: str  # "landsat" or "precipitation": the satellite layer switched on first
-    features: Callable[[], list]  # returns fresh folium objects (each can only be on one map)
+    sources: list[str]                 # source ids (see capstone/sources), drawn in this order
+    shown: list[str]                   # the sources that are switched on when the map opens
+    planned: list[str] = field(default_factory=list)          # sources we still want to add
+    examples: Callable[[], list] | None = None                # placeholder shapes, to be removed
 
 
-def _agriculture_features() -> list:
+def _agriculture_examples() -> list:
     points = [(36.7, -119.8), (42.0, -93.5), (38.5, -98.0), (27.5, -81.0)]
     return [folium.Marker(p, popup="Example point: farmland area") for p in points]
 
 
-def _drought_features() -> list:
+def _drought_examples() -> list:
     areas = [
         ((35.0, -111.0), 450_000, "#c8963c", 0.35),
         ((37.0, -120.0), 300_000, "#a8531f", 0.35),
@@ -41,67 +42,75 @@ def _drought_features() -> list:
     ]
 
 
-def _el_nino_features() -> list:
-    return [
-        folium.Rectangle(
-            [[25, -125], [49, -100]], color="#3b6fb0", fill=True, fill_opacity=0.2,
-            popup="Example region: wetter than normal",
-        ),
-        folium.Rectangle(
-            [[25, -100], [40, -75]], color="#3b6fb0", fill=True, fill_opacity=0.1, dash_array="6",
-            popup="Example region: transition",
-        ),
-    ]
-
-
 TOPICS = {
     t.name: t
     for t in [
         Topic(
             name="Agriculture",
-            color="#2f6b4f",
-            sources=["Landsat imagery (NASA GIBS, live layer)", "Cropland data source (placeholder)"],
-            default_layer="landsat",
-            features=_agriculture_features,
+            sources=["gibs_landsat"],
+            shown=["gibs_landsat"],
+            planned=["Cropland data"],
+            examples=_agriculture_examples,
         ),
         Topic(
             name="Droughts",
-            color="#c8963c",
-            sources=["Precipitation (IMERG via NASA GIBS, live layer)", "Drought index data source (placeholder)"],
-            default_layer="precipitation",
-            features=_drought_features,
+            sources=["gibs_imerg_rate", "imerg_monthly"],
+            shown=["gibs_imerg_rate"],
+            planned=["Drought index data"],
+            examples=_drought_examples,
         ),
         Topic(
             name="El Niño",
-            color="#3b6fb0",
-            sources=["Precipitation (IMERG via NASA GIBS, live layer)", "Ocean / climate index data source (placeholder)"],
-            default_layer="precipitation",
-            features=_el_nino_features,
+            sources=["imerg_monthly", "gibs_imerg_rate"],
+            shown=["imerg_monthly"],
+            planned=["Ocean / climate index data (e.g. ENSO index)"],
         ),
     ]
 }
 
 
-def topic_map(name: str, height: int = 520) -> folium.Figure:
-    """Build the interactive map for one topic."""
+def topic_map(name: str, height: int = 520) -> tuple[folium.Figure, list[str]]:
+    """Build the interactive map for one topic. Also returns the sources that could not be loaded."""
     topic = TOPICS[name]
     fig = folium.Figure(width="100%", height=f"{height}px")
     m = folium.Map(location=US_CENTER, zoom_start=4, tiles="OpenStreetMap").add_to(fig)
 
-    layers.landsat(show=topic.default_layer == "landsat").add_to(m)
-    layers.precipitation(show=topic.default_layer == "precipitation").add_to(m)
+    skipped = []
+    for source_id in topic.sources:
+        try:
+            SOURCES[source_id].add_to_map(m, source_id in topic.shown)
+        except EarthdataLoginMissing:
+            skipped.append(source_id)
 
-    group = folium.FeatureGroup(name=f"{name} (example data)")
-    for feature in topic.features():
-        feature.add_to(group)
-    group.add_to(m)
+    if topic.examples:
+        group = folium.FeatureGroup(name=f"{name} (example placeholders)")
+        for shape in topic.examples():
+            shape.add_to(group)
+        group.add_to(m)
 
     folium.LayerControl(collapsed=False, position="topright").add_to(m)
-    return fig
+    return fig, skipped
+
+
+def sources_table(source_ids: list[str]) -> str:
+    """Markdown table with the key facts about each source."""
+    rows = ["| Dataset | Provider | Resolution | Updated | Status |", "|---|---|---|---|---|"]
+    for s in (SOURCES[i] for i in source_ids):
+        rows.append(f"| [{s.name}]({s.url}) | {s.provider} | {s.spatial_resolution} "
+                    f"| {s.update_frequency} | {s.status} |")
+    return "\n".join(rows)
 
 
 def show_topic(name: str) -> None:
-    """Display a topic's map followed by its list of data sources."""
-    display(topic_map(name))
-    sources = "\n".join(f"- {s}" for s in TOPICS[name].sources)
-    display(Markdown(f"**Data sources for {name}**\n\n{sources}"))
+    """Display a topic's map followed by its data sources."""
+    topic = TOPICS[name]
+    fig, skipped = topic_map(name)
+    display(fig)
+
+    text = f"**Data sources for {name}**\n\n{sources_table(topic.sources)}\n"
+    if topic.planned:
+        text += "\n**Coming soon:** " + ", ".join(topic.planned) + "\n"
+    if skipped:
+        names = ", ".join(SOURCES[i].name for i in skipped)
+        text += f"\n::: {{.callout-warning}}\nNot shown on the map (no Earthdata login when this page was built): {names}\n:::\n"
+    display(Markdown(text))
