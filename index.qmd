@@ -1,0 +1,35 @@
+---
+title: "US agriculture & climate data map"
+jupyter: capstone-cohort10
+---
+
+```{python}
+from capstone.topics import show_topic
+```
+
+::: {.panel-tabset}
+
+## Agriculture
+
+```{python}
+show_topic("Agriculture")
+```
+
+## Droughts
+
+```{python}
+show_topic("Droughts")
+```
+
+## El Niño
+
+```{python}
+show_topic("El Niño")
+```
+
+:::
+
+::: {.callout-note}
+OpenStreetMap base with real NASA Landsat and precipitation layers (toggle top right).
+Markers and shaded areas are illustrative placeholders, not real data.
+:::
