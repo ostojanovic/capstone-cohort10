@@ -78,7 +78,7 @@ can select it in JupyterLab or VS Code. You only need to run it once.
 
 Some data sources need a free login (for example NASA Earthdata, which we access with `earthaccess`).
 Copy `.env.example` to `.env` and fill in your logins. Git ignores `.env`, so it is never committed.
-See [CONTRIBUTING.md, section 2.7](CONTRIBUTING.md#27-add-your-logins-env-file).
+See [CONTRIBUTING.md, section 2.4](CONTRIBUTING.md#24-add-your-logins-only-for-nasa-data).
 
 If `environment.yml` changes later, update your environment with:
 
@@ -95,7 +95,7 @@ quarto render     # build the full site into _site/
 
 - **Data sources**: each dataset is one Python file in `src/capstone/sources/`, describing the dataset
   and how to draw it on the map. To add one, copy `_template.py`. See
-  [CONTRIBUTING.md, section 4](CONTRIBUTING.md#4-adding-a-data-source).
+  [src/capstone/sources/README.md](src/capstone/sources/README.md).
 - **Maps**: `src/capstone/topics.py` lists which sources each use case shows. `index.qmd` only calls `show_topic(...)`.
 - **New blog post**: create a folder `blog/posts/YYYY-MM-DD-short-title/` with an `index.qmd` or
   `index.ipynb` file. Copy the header of an existing post. It appears on the Blog page automatically.

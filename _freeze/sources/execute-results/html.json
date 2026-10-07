@@ -1,0 +1,12 @@
+{
+  "hash": "efe11b0256c963d1d03c605a37ac19c2",
+  "result": {
+    "engine": "jupyter",
+    "markdown": "---\ntitle: \"Data sources\"\njupyter: capstone-cohort10\n---\n\nAll datasets used on this website, with what we learned about each one: how to access it, its resolution,\nhow often it is updated and its current status. All data belongs to its respective owners.\n\n## Landsat WELD true-colour annual composite\n\n- **Provider:** NASA GIBS (imagery: USGS/NASA Landsat)\n- **Link:** <https://nasa-gibs.github.io/gibs-api-docs/>\n- **Access:** Tile service (WMTS), no login\n- **Spatial resolution:** 30 m (shown up to zoom 12)\n- **Temporal coverage:** 2010 annual composite\n- **Update frequency:** Static (historical product)\n- **Status:** Active\n- **License / citation:** NASA open data. Acknowledge NASA GIBS / ESDIS\n\n## IMERG precipitation rate (latest)\n\n- **Provider:** NASA GIBS (data: NASA GPM)\n- **Link:** <https://nasa-gibs.github.io/gibs-api-docs/>\n- **Access:** Tile service (WMTS), no login\n- **Spatial resolution:** 0.1° (~10 km)\n- **Temporal coverage:** Near real-time\n- **Update frequency:** Every 30 minutes\n- **Status:** Active\n- **License / citation:** NASA open data. Acknowledge NASA GIBS / ESDIS\n\n## GPM IMERG Final Precipitation L3 Monthly (GPM_3IMERGM v07)\n\n- **Provider:** NASA GES DISC\n- **Link:** <https://disc.gsfc.nasa.gov/datasets/GPM_3IMERGM_07/summary>\n- **Access:** earthaccess (NASA Earthdata login)\n- **Spatial resolution:** 0.1° (~10 km)\n- **Temporal coverage:** 1998–present, monthly\n- **Update frequency:** Monthly, ~3–4 months delay\n- **Status:** Active\n- **License / citation:** NASA open data. Cite: Huffman et al., GPM IMERG Final Precipitation L3 Monthly, V07, GES DISC\n\n\n\n",
+    "supporting": [
+      "sources_files"
+    ],
+    "filters": [],
+    "includes": {}
+  }
+}

@@ -1,0 +1,12 @@
+{
+  "hash": "2ea21962f7a6ec550c226a7e97949fcb",
+  "result": {
+    "engine": "jupyter",
+    "markdown": "---\ntitle: \"Example: a post with Python code\"\ndate: 2026-10-08\nauthor: \"Cohort 10 team\"\ncategories: [example, python]\njupyter: capstone-cohort10\ndescription: \"Template showing how a post can run Python and show the code.\"\nexecute:\n  echo: true\n---\n\nPosts can contain Python cells like this one. Jupyter notebooks (`.ipynb`) also work as posts:\nput `index.ipynb` in a new folder under `blog/posts/` instead of `index.qmd`.\n\n::: {#62fa1191 .cell execution_count=1}\n``` {.python .cell-code}\nfrom capstone.topics import topic_map\n\ntopic_map(\"Droughts\", height=400)\n```\n\n::: {.cell-output .cell-output-display execution_count=1}\n```\n(<branca.element.Figure at 0x12b234530>, ['imerg_monthly'])\n```\n:::\n:::\n\n\n",
+    "supporting": [
+      "index_files"
+    ],
+    "filters": [],
+    "includes": {}
+  }
+}
