@@ -1,0 +1,20 @@
+# Conda environment for the project (Python, Jupyter, Quarto and data libraries).
+#   conda env create -f environment.yml
+#   conda activate capstone-cohort10
+# After changing this file: conda env update -f environment.yml --prune
+name: capstone-cohort10
+channels:
+  - conda-forge
+dependencies:
+  - python=3.12
+  - quarto
+  - jupyterlab
+  - ipykernel
+  - folium
+  - pandas
+  - geopandas
+  - matplotlib
+  - requests
+  - pip
+  - pip:
+      - -e .  # installs the local `capstone` package from src/
