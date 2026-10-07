@@ -9,10 +9,11 @@ If something doesn't work, ask in the team channel. Getting stuck on Git is norm
 1. [How we work: the short version](#1-how-we-work-the-short-version)
 2. [One-time setup](#2-one-time-setup)
 3. [Your everyday workflow](#3-your-everyday-workflow)
-4. [Reviewing a pull request](#4-reviewing-a-pull-request)
-5. [Good habits](#5-good-habits)
-6. [When things go wrong](#6-when-things-go-wrong)
-7. [Cheat sheet](#7-cheat-sheet)
+4. [Adding a data source](#4-adding-a-data-source)
+5. [Reviewing a pull request](#5-reviewing-a-pull-request)
+6. [Good habits](#6-good-habits)
+7. [When things go wrong](#7-when-things-go-wrong)
+8. [Cheat sheet](#8-cheat-sheet)
 
 ---
 
@@ -55,13 +56,7 @@ You do this once per computer.
    Install it from [cli.github.com](https://cli.github.com) (on macOS with Homebrew: `brew install gh`).
 4. **An editor**: we recommend [VS Code](https://code.visualstudio.com) with the *Python*, *Jupyter* and *Quarto* extensions.
 
-### 2.2 Get access to the repository
-
-1. Create a [GitHub account](https://github.com/signup) if you don't have one.
-2. Send your GitHub username to the project maintainer and ask to be added as a **collaborator**.
-3. Accept the invitation you receive by email (or at <https://github.com/notifications>).
-
-### 2.3 Tell Git who you are
+### 2.2 Tell Git who you are
 
 Use the same email as your GitHub account. Your name appears on every commit you make.
 
@@ -70,7 +65,7 @@ git config --global user.name "Your Name"
 git config --global user.email "you@example.com"
 ```
 
-### 2.4 Log in to GitHub from the terminal
+### 2.3 Log in to GitHub from the terminal
 
 ```bash
 gh auth login
@@ -79,7 +74,7 @@ gh auth login
 Answer the questions: **GitHub.com**, **HTTPS**, **Yes** (authenticate Git), **Login with a web browser**.
 Then follow the instructions in the browser.
 
-### 2.5 Download (clone) the project
+### 2.4 Download (clone) the project
 
 Go to the folder where you keep your projects, then clone:
 
@@ -91,7 +86,7 @@ cd capstone-cohort10
 
 You now have a folder `capstone-cohort10` with the whole project and its history.
 
-### 2.6 Switch to the working branch
+### 2.5 Switch to the working branch
 
 ```bash
 git checkout develop
@@ -99,7 +94,7 @@ git checkout develop
 
 `git branch` should now show `* develop`. The star marks the branch you are on.
 
-### 2.7 Create the Python environment
+### 2.6 Create the Python environment
 
 The environment contains Python, Jupyter, Quarto and all the libraries we use, in the same versions for everyone.
 
@@ -113,6 +108,38 @@ The first command takes a few minutes. The last one makes the environment availa
 
 > Every time you open a new terminal to work on the project, run `conda activate capstone-cohort10` first.
 > Your prompt then starts with `(capstone-cohort10)`.
+
+### 2.7 Add your logins (`.env` file)
+
+Some data providers need a (free) account before you can download their data. We keep these logins in a file
+called `.env` in the project folder. Git ignores this file, so your passwords never end up on GitHub.
+
+1. Copy the example file:
+   ```bash
+   cp .env.example .env
+   ```
+2. Open `.env` in your editor and fill in the logins you have. Leave the others empty.
+
+**NASA Earthdata login** (needed for NASA data, which we download with the `earthaccess` library):
+
+1. Create a free account at <https://urs.earthdata.nasa.gov/users/new>.
+2. Put your username and password in `.env`:
+   ```
+   EARTHDATA_USERNAME=your-username
+   EARTHDATA_PASSWORD=your-password
+   ```
+3. Check that it works:
+   ```bash
+   python -m capstone.earthdata
+   ```
+   It should print `Earthdata login works.`
+
+Some datasets also ask you to approve an "application" before the first download (for example *NASA GESDISC DATA ARCHIVE*).
+If a download fails with an authorisation error, log in at <https://urs.earthdata.nasa.gov>, go to
+**Applications → Authorized Apps**, and approve the one named in the error.
+
+> ⚠️ **Never commit `.env`**, and never paste passwords or API keys into code, notebooks or pull requests.
+> If you add a new kind of login, add the variable name (without the value!) to `.env.example`.
 
 ### 2.8 Check that everything works
 
@@ -234,7 +261,41 @@ Back to Step 1 for the next task.
 
 ---
 
-## 4. Reviewing a pull request
+## 4. Adding a data source
+
+Showing data from different sources is the core of this project. Each data source is **one Python file**
+in `src/capstone/sources/`. The file describes the dataset (provider, resolution, update frequency, status …)
+and says how to draw it on the map. You don't need a notebook for this. Notebooks are optional, for analysis.
+
+1. Create a feature branch, for example `feature/drought-monitor-source` (see section 3).
+2. Copy the template and give the copy a short name:
+   ```bash
+   cp src/capstone/sources/_template.py src/capstone/sources/usdm_drought.py
+   ```
+3. Fill in the `SOURCE = Source(...)` part at the bottom. These details appear on the website's
+   **Data sources** page, so write down what you learned about the dataset:
+   how you accessed it, its resolution, how often it is updated and whether it is at risk.
+4. Fill in `add_to_map`. The template shows four patterns. Pick the one that matches how the provider publishes the data:
+   - **A) Map tiles**: the provider offers a tile URL. This is the easiest: just give folium the URL.
+     See `gibs_landsat.py` for an example.
+   - **B) WMS service**: common for USDA, NOAA and USGS. Give folium the service URL and layer name.
+   - **C) Vector files** (GeoJSON, shapefiles): load with geopandas and draw the shapes.
+   - **D) NASA Earthdata**: download with `earthaccess`, open with xarray, draw as a coloured image.
+     See `imerg_monthly.py` for an example. This needs your Earthdata login (section 2.7).
+5. Register the source: open `src/capstone/sources/__init__.py`, import your file and add `your_file.SOURCE` to the list.
+6. Show it on a map: open `src/capstone/topics.py` and add your source's `id` to the `sources` list of
+   one or more topics. Add it to `shown` as well if it should be switched on when the map opens.
+7. Check it with `quarto preview`: your layer should be on the map, and your dataset on the **Data sources** page.
+8. Commit, push and open a pull request (section 3, steps 5–7).
+
+**Good to know**
+
+- Downloaded files go into `data/raw/`, which Git ignores. Each file is downloaded only once.
+- If you build the website without an Earthdata login, the Earthdata layers are left out and the page shows
+  a warning. Nothing breaks.
+- Need a new library? Add it to `environment.yml` (see section 6).
+
+## 5. Reviewing a pull request
 
 Reviewing is as important as writing code. It is how we catch mistakes and learn from each other.
 
@@ -252,7 +313,7 @@ Be kind and specific: "This legend is hard to read in dark mode, maybe use a dar
 
 ---
 
-## 5. Good habits
+## 6. Good habits
 
 - **Keep your branch up to date** when it lives longer than a few days, so you don't drift away from `develop`:
   ```bash
@@ -262,7 +323,7 @@ Be kind and specific: "This legend is hard to read in dark mode, maybe use a dar
   ```
 - **Don't commit data files.** Put downloaded data in `data/raw/` and processed data in `data/processed/`.
   Git ignores both folders. Write down in your notebook or post where the data comes from and how to download it.
-- **Don't commit secrets**, such as API keys, passwords or tokens. If a data source needs a key, ask the team how to handle it.
+- **Don't commit secrets**, such as API keys, passwords or tokens. They belong in `.env` (see section 2.7).
 - **Commit `_freeze/` changes.** Quarto stores the results of executed pages there, so the website can be built
   without re-running everything.
 - **Adding a Python package?** Add it to `environment.yml` in your PR and mention it in the PR description.
@@ -275,7 +336,7 @@ Be kind and specific: "This legend is hard to read in dark mode, maybe use a dar
 
 ---
 
-## 6. When things go wrong
+## 7. When things go wrong
 
 **"I committed on `develop` by accident"** (and haven't pushed yet): move the commit to a new branch.
 ```bash
@@ -310,13 +371,13 @@ git restore <file>
 Check with `git branch`, then run `git pull` and push again.
 
 **"Quarto says `No module named 'capstone'`"**: the page is missing `jupyter: capstone-cohort10` in its header,
-or you haven't run the kernel install command from step 2.7.
+or you haven't run the kernel install command from step 2.6.
 
 **Never use `git push --force`** on `develop` or `main`.
 
 ---
 
-## 7. Cheat sheet
+## 8. Cheat sheet
 
 | I want to… | Command |
 |---|---|
