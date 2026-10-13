@@ -116,6 +116,7 @@ Download it from the original source.
 |---|---|---|---|
 | Base map tiles | © [OpenStreetMap](https://www.openstreetmap.org/copyright) contributors | Base map | [ODbL](https://opendatacommons.org/licenses/odbl/), attribution required. [Tile usage policy](https://operations.osmfoundation.org/policies/tiles/) |
 | Landsat WELD true-colour annual composite | NASA [GIBS](https://nasa-gibs.github.io/gibs-api-docs/) | Agriculture | NASA open data policy |
+| HLS Landsat surface reflectance (HLSL30 v2.0), daily | NASA LP DAAC via [GIBS](https://nasa-gibs.github.io/gibs-api-docs/) | Agriculture | NASA open data policy. Cite Masek et al. |
 | IMERG precipitation rate | NASA GPM via [GIBS](https://nasa-gibs.github.io/gibs-api-docs/) | Droughts, El Niño | NASA open data policy |
 | IMERG monthly precipitation (GPM_3IMERGM v07) | [NASA GES DISC](https://disc.gsfc.nasa.gov/datasets/GPM_3IMERGM_07/summary) | Droughts, El Niño | NASA open data policy. Cite Huffman et al. |
 
