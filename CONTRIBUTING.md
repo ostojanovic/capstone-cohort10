@@ -153,7 +153,9 @@ Be kind and specific: "The legend is hard to read, maybe a darker blue?" helps m
 
 - **Don't commit data.** Downloads go into `data/raw/` and `data/processed/`, which Git ignores.
 - **Don't commit secrets.** Logins belong in `.env`.
-- **Commit `_freeze/` changes.** Quarto stores the results of executed pages there.
+- **Commit `_freeze/` changes.** Quarto stores the results of executed pages there, and the published website
+  is built from them. Quarto only re-runs a page when its `.qmd` changes, so after changing code in
+  `src/capstone/`, re-run the pages that use it, for example `quarto render index.qmd`.
 - **New Python package?** Add it to `environment.yml` and mention it in the pull request.
   Everyone else then runs `conda env update -f environment.yml --prune`.
 - **Branch older than a few days?** Bring in the latest work: `git checkout develop && git pull`, then
