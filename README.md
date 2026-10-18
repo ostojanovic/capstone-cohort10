@@ -105,7 +105,11 @@ quarto render     # build the full site into _site/
 - **Notebooks**: Quarto ignores files and folders whose names start with `_`. Use that for scratch
   notebooks you don't want published.
 - **Freeze**: Quarto stores executed results in `_freeze/` and only re-runs a page when its source changes.
-  Commit `_freeze/` along with your changes.
+  Commit `_freeze/` along with your changes. After changing code in `src/capstone/`, re-run the pages that use
+  it, for example `quarto render index.qmd`.
+- **Publishing**: every push to `main` publishes the website on GitHub Pages
+  ([.github/workflows/publish.yml](.github/workflows/publish.yml)). The workflow doesn't run any Python. It
+  builds from `_freeze/`, so what you committed there is what goes online.
 
 ## Data sources
 

@@ -1,0 +1,63 @@
+# Build the Quarto website and publish it on GitHub Pages.
+#
+# Runs on every push to `main` (the published version) and manually from the Actions tab.
+# Pages are NOT re-executed here: Quarto uses the results committed in `_freeze/`.
+# So after changing Python code, re-render the affected pages locally and commit `_freeze/`.
+#
+# One-time setup (repository admin): Settings → Pages → Build and deployment → Source: "GitHub Actions".
+
+name: Publish website
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write      # to deploy to GitHub Pages
+  id-token: write   # to verify the deployment comes from this repository
+
+concurrency:        # if two pushes come in quickly, only publish the latest
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: quarto-dev/quarto-actions/setup@v2
+        with:
+          version: 1.9.38   # same as the team uses locally (`quarto --version`); update together
+
+      # Pages name the Jupyter kernel `capstone-cohort10`, so Quarto needs a kernel with that name,
+      # even though it doesn't run any code. Our own libraries are deliberately not installed:
+      # if `_freeze/` is out of date, Quarto tries to run the page and the build fails instead of
+      # publishing an incomplete site.
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.12"
+      - name: Register Jupyter kernel
+        run: |
+          pip install jupyter
+          python -m ipykernel install --user --name capstone-cohort10
+
+      - name: Render website
+        run: quarto render
+
+      - uses: actions/configure-pages@v6
+      - uses: actions/upload-pages-artifact@v5
+        with:
+          path: _site
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v5
