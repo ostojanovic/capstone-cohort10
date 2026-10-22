@@ -24,7 +24,7 @@ FIRST_DAY = LAST_DAY - timedelta(days=DAYS - 1)
 
 def add_to_map(m: folium.Map, show: bool) -> None:
     group = folium.FeatureGroup(
-        name=f"Landsat, {FIRST_DAY:%-d %b}–{LAST_DAY:%-d %b %Y} (HLS)", show=show
+        name=f"Landsat, {FIRST_DAY.day} {FIRST_DAY:%b}–{LAST_DAY.day} {LAST_DAY:%b %Y} (HLS)", show=show
     )
     for i in range(DAYS):  # oldest first, so the most recent images are drawn on top
         day = FIRST_DAY + timedelta(days=i)
