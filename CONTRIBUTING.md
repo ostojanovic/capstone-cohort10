@@ -160,6 +160,8 @@ Be kind and specific: "The legend is hard to read, maybe a darker blue?" helps m
   Everyone else then runs `conda env update -f environment.yml --prune`.
 - **Branch older than a few days?** Bring in the latest work: `git checkout develop && git pull`, then
   `git checkout <your-branch>` and `git merge develop`.
+- **Save notebooks with their outputs.** Quarto doesn't run `.ipynb` posts, it shows what is saved in them.
+  Run all cells, save, then commit.
 - **Notebooks are hard to merge.** Agree on who edits which notebook.
 
 ## 7. When things go wrong

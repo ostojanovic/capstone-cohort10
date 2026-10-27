@@ -1,6 +1,7 @@
 # Build the Quarto website and publish it on GitHub Pages.
 #
 # Runs on every push to `main` (the published version) and manually from the Actions tab.
+# Pull requests to `develop` only build the site, to catch problems before they are merged. Nothing is published.
 # Pages are NOT re-executed here: Quarto uses the results committed in `_freeze/`.
 # So after changing Python code, re-render the affected pages locally and commit `_freeze/`.
 #
@@ -11,15 +12,15 @@ name: Publish website
 on:
   push:
     branches: [main]
+  pull_request:
+    branches: [develop]
   workflow_dispatch:
 
 permissions:
   contents: read
-  pages: write      # to deploy to GitHub Pages
-  id-token: write   # to verify the deployment comes from this repository
 
-concurrency:        # if two pushes come in quickly, only publish the latest
-  group: pages
+concurrency:        # if two pushes come in quickly, only build the latest (each branch / pull request separately)
+  group: pages-${{ github.ref }}
   cancel-in-progress: true
 
 jobs:
@@ -47,14 +48,21 @@ jobs:
       - name: Render website
         run: quarto render
 
+      # Everything below only runs when publishing, not for pull requests
       - uses: actions/configure-pages@v6
+        if: github.event_name != 'pull_request'
       - uses: actions/upload-pages-artifact@v5
+        if: github.event_name != 'pull_request'
         with:
           path: _site
 
   deploy:
     needs: build
+    if: github.event_name != 'pull_request'
     runs-on: ubuntu-latest
+    permissions:
+      pages: write      # to deploy to GitHub Pages
+      id-token: write   # to verify the deployment comes from this repository
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}

@@ -89,6 +89,7 @@ conda env update -f environment.yml --prune
 ## Working on the website
 
 ```bash
+conda activate capstone-cohort10    # first, so the right Quarto and Python are used
 quarto preview    # live preview in the browser, reloads on save
 quarto render     # build the full site into _site/
 ```
@@ -102,14 +103,16 @@ quarto render     # build the full site into _site/
 - **Pages with Python code** need `jupyter: capstone-cohort10` in their header (see `index.qmd`). Otherwise
   Quarto may pick a Jupyter kernel from a different environment. For `.ipynb` files, select the
   "Python (capstone-cohort10)" kernel instead.
-- **Notebooks**: Quarto ignores files and folders whose names start with `_`. Use that for scratch
-  notebooks you don't want published.
+- **Notebooks**: Quarto does not run `.ipynb` files. It shows the outputs saved in the notebook, so run all
+  cells and save before committing, or the page is empty online. Quarto ignores files and folders whose
+  names start with `_`. Use that for scratch notebooks you don't want published.
 - **Freeze**: Quarto stores executed results in `_freeze/` and only re-runs a page when its source changes.
   Commit `_freeze/` along with your changes. After changing code in `src/capstone/`, re-run the pages that use
   it, for example `quarto render index.qmd`.
 - **Publishing**: every push to `main` publishes the website on GitHub Pages
   ([.github/workflows/publish.yml](.github/workflows/publish.yml)). The workflow doesn't run any Python. It
-  builds from `_freeze/`, so what you committed there is what goes online.
+  builds from `_freeze/`, so what you committed there is what goes online. Pull requests to `develop` run the
+  same build without publishing, so a red ❌ on a pull request means the site would not build.
 
 ## Data sources
 

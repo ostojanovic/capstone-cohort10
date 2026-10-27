@@ -15,5 +15,6 @@ put `index.ipynb` in a new folder under `blog/posts/` instead of `index.qmd`.
 ```{python}
 from capstone.topics import topic_map
 
-topic_map("Droughts", height=400)
+fig, skipped = topic_map("Droughts", height=400)
+fig
 ```
