@@ -1,0 +1,31 @@
+project:
+  type: website
+  output-dir: _site
+  render:            # which files become website pages
+    - "*.qmd"
+    - "*.ipynb"
+    - "!CONTRIBUTING.md"
+
+website:
+  title: "US Agriculture & Climate Data Map"
+  navbar:
+    left:
+      - href: index.qmd
+        text: Map
+      - href: sources.qmd
+        text: Data sources
+      - href: blog/index.qmd
+        text: Blog
+      - href: about.qmd
+        text: About
+  page-footer:
+    center: "Climatebase Fellowship · Cohort 10 capstone · For educational and research purposes only · Content [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/)"
+
+format:
+  html:
+    theme: cosmo
+
+execute:
+  freeze: auto   # only re-run code when a page's source changes
+  echo: false    # hide code on the website by default; posts can set `echo: true`
+  warning: false

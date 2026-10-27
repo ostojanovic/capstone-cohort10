@@ -1,0 +1,38 @@
+---
+title: "About"
+---
+
+This website is the capstone project of **Cohort 10 of the [Climatebase Fellowship](https://climatebase.org/)**.
+
+Publicly available data is not the same as usable data. US climate and Earth observation data is spread
+across agencies, each with its own website, format and access method. Sources differ in resolution and
+update frequency, and some are at risk of being discontinued.
+
+We research and showcase how these datasets can be found, accessed, combined and used in practice,
+through three use cases: **agriculture**, **droughts** and **El Niño**.
+
+## Disclaimer
+
+- This project is for **educational and research purposes only**. It is not a commercial product.
+- It is **not affiliated with or endorsed by** Climatebase, NASA, USDA, NOAA or any other data provider.
+- **All data belongs to its respective owners** and is used under their licenses and terms of use.
+  See the data sources listed with each map.
+- The maps and analyses are provided **as is, without any warranty** of accuracy, completeness or timeliness.
+  They must not be used for agricultural, financial, insurance or emergency decisions.
+  Please refer to the official sources for that.
+- Views expressed in blog posts are those of the authors.
+
+Data owners with concerns about how their data is used can contact us via the
+[project repository](https://github.com/ostojanovic/capstone-cohort10/issues).
+
+## License
+
+Code is released under the [MIT License](https://github.com/ostojanovic/capstone-cohort10/blob/main/LICENSE).
+Written content and figures we created are licensed under
+[CC BY 4.0](https://creativecommons.org/licenses/by/4.0/).
+Third-party data and imagery remain under their original terms.
+
+## Team
+
+<!-- TODO: add team members (name, role, GitHub/LinkedIn). Keep this in sync with the Team section in README.md -->
+Climatebase Fellowship Cohort 10 capstone team.

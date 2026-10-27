@@ -1,0 +1,10 @@
+---
+title: "Welcome to our capstone project"
+date: 2026-10-07
+author: "Cohort 10 team"
+categories: [news]
+description: "What we are building and why."
+---
+
+Placeholder text: introduce the project, the team and the three focus areas
+(agriculture, droughts and El Niño).

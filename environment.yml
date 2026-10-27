@@ -1,0 +1,59 @@
+# Conda environment for the project: data analysis, GIS, Earth observation and the Quarto website.
+#   conda env create -f environment.yml
+#   conda activate capstone-cohort10
+# After changing this file: conda env update -f environment.yml --prune
+name: capstone-cohort10
+channels:
+  - conda-forge
+dependencies:
+  - python=3.12
+  - pip
+
+  # Data analysis
+  - numpy
+  - pandas
+  - scipy
+  - statsmodels
+  - scikit-learn
+
+  # Plotting
+  - matplotlib
+  - seaborn
+  - plotly          # interactive charts that work on the website
+
+  # GIS: vector data (shapes, boundaries)
+  - geopandas
+  - shapely
+  - pyproj          # coordinate systems and reprojection
+  - pyogrio         # fast reading/writing of shapefiles, GeoPackage, GeoJSON
+
+  # GIS: raster and gridded data (satellite images, climate grids)
+  - xarray
+  - rioxarray       # geospatial extension for xarray (CRS, reprojection, clipping)
+  - rasterio        # GeoTIFF and Cloud-Optimized GeoTIFF
+  - netcdf4         # NetCDF files
+  - h5netcdf        # NetCDF/HDF5 files (most NASA datasets)
+  - dask            # work with datasets larger than memory
+  - regionmask      # select grid cells by state, county or any shape
+
+  # Maps
+  - folium          # interactive web maps (Leaflet)
+  - cartopy         # static maps for figures
+
+  # Data access
+  - earthaccess     # search and download NASA Earthdata (needs a login, see CONTRIBUTING.md)
+  - pystac-client   # search STAC catalogs (e.g. Microsoft Planetary Computer, Element 84)
+  - requests
+  - python-dotenv   # loads logins from the .env file
+
+  # Website and notebooks
+  - quarto
+  - jupyterlab
+  - ipykernel
+  - itables         # interactive (sortable, searchable) tables on the website
+
+  # Code quality
+  - ruff            # linter and formatter
+
+  - pip:
+      - -e .  # installs the local `capstone` package from src/

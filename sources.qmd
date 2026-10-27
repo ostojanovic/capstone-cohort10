@@ -1,0 +1,26 @@
+---
+title: "Data sources"
+jupyter: capstone-cohort10
+---
+
+All datasets used on this website, with what we learned about each one: how to access it, its resolution,
+how often it is updated and its current status. All data belongs to its respective owners.
+
+```{python}
+#| output: asis
+from capstone.sources import SOURCES
+
+for s in SOURCES.values():
+    print(f"## {s.name}\n")
+    print(f"- **Provider:** {s.provider}")
+    print(f"- **Link:** <{s.url}>")
+    print(f"- **Access:** {s.access}")
+    print(f"- **Spatial resolution:** {s.spatial_resolution}")
+    print(f"- **Temporal coverage:** {s.temporal_coverage}")
+    print(f"- **Update frequency:** {s.update_frequency}")
+    print(f"- **Status:** {s.status}")
+    print(f"- **License / citation:** {s.license}")
+    if s.notes:
+        print(f"- **Notes:** {s.notes}")
+    print()
+```
