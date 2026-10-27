@@ -48,6 +48,10 @@ jobs:
       - name: Render website
         run: quarto render
 
+      # Fails if a page shows a Python error or a map/chart as text, or a notebook has no outputs
+      - name: Check website
+        run: python .github/check_site.py
+
       # Everything below only runs when publishing, not for pull requests
       - uses: actions/configure-pages@v6
         if: github.event_name != 'pull_request'
