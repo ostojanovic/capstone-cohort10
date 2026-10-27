@@ -89,6 +89,13 @@ def topic_map(name: str, height: int = 520) -> tuple[folium.Figure, list[str]]:
         group.add_to(m)
 
     folium.LayerControl(collapsed=False, position="topright").add_to(m)
+    if skipped:
+        names = ", ".join(SOURCES[i].name for i in skipped)
+        m.get_root().html.add_child(folium.Element(
+            '<div style="position:absolute; bottom:24px; left:10px; z-index:1000; max-width:60%;'
+            ' padding:6px 10px; background:#fff3cd; border:1px solid #c8963c; border-radius:4px;'
+            f' font:13px sans-serif;">⚠️ Not shown (no Earthdata login when this page was built): {names}</div>'
+        ))
     return fig, skipped
 
 
@@ -104,13 +111,10 @@ def sources_table(source_ids: list[str]) -> str:
 def show_topic(name: str) -> None:
     """Display a topic's map followed by its data sources."""
     topic = TOPICS[name]
-    fig, skipped = topic_map(name)
+    fig, _ = topic_map(name)  # missing sources are flagged on the map itself
     display(fig)
 
     text = f"**Data sources for {name}**\n\n{sources_table(topic.sources)}\n"
     if topic.planned:
         text += "\n**Coming soon:** " + ", ".join(topic.planned) + "\n"
-    if skipped:
-        names = ", ".join(SOURCES[i].name for i in skipped)
-        text += f"\n::: {{.callout-warning}}\nNot shown on the map (no Earthdata login when this page was built): {names}\n:::\n"
     display(Markdown(text))

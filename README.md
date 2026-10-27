@@ -112,7 +112,9 @@ quarto render     # build the full site into _site/
 - **Publishing**: every push to `main` publishes the website on GitHub Pages
   ([.github/workflows/publish.yml](.github/workflows/publish.yml)). The workflow doesn't run any Python. It
   builds from `_freeze/`, so what you committed there is what goes online. Pull requests to `develop` run the
-  same build without publishing, so a red ❌ on a pull request means the site would not build.
+  same build without publishing, so a red ❌ on a pull request means the site would not build. The build also
+  fails when a page shows a Python error or a map as text, or a notebook has no outputs
+  ([.github/check_site.py](.github/check_site.py)).
 
 ## Data sources
 
