@@ -7,7 +7,7 @@ Stuck? Ask in the team channel. Getting stuck on Git is normal.
 1. [How we work](#1-how-we-work)
 2. [One-time setup](#2-one-time-setup)
 3. [Everyday workflow](#3-everyday-workflow)
-4. [Adding a data source](#4-adding-a-data-source)
+4. [Adding a data source or a blog post](#4-adding-a-data-source-or-a-blog-post)
 5. [Reviewing a pull request](#5-reviewing-a-pull-request)
 6. [Good habits](#6-good-habits)
 7. [When things go wrong](#7-when-things-go-wrong)
@@ -134,11 +134,20 @@ git pull
 git branch -d feature/drought-monitor-layer
 ```
 
-## 4. Adding a data source
+## 4. Adding a data source or a blog post
 
-Each dataset on the website is one Python file in `src/capstone/sources/`. No notebook needed.
+**Data source.** Each dataset on the website is one Python file in `src/capstone/sources/`. No notebook needed.
 The step-by-step guide, with a complete example, is in
 **[src/capstone/sources/README.md](src/capstone/sources/README.md)**.
+
+**Blog post.** Each post is one folder in `blog/posts/`. Copy the template and give the folder the date and a short title:
+
+```bash
+cp -r blog/posts/_template blog/posts/2026-11-05-drought-monitor
+```
+
+Fill in the header (title, date, description) and write your post in `index.qmd`. The template shows how to
+add Python code, or how to use a Jupyter notebook instead. Check it with `quarto preview`: the post appears on the Blog page.
 
 ## 5. Reviewing a pull request
 

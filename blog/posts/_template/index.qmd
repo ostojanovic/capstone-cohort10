@@ -1,0 +1,29 @@
+---
+title: "Post title"
+date: 2026-10-08                  # YYYY-MM-DD, the same as in the folder name
+author: "Cohort 10 team"
+categories: [python]              # e.g. agriculture, droughts, el-nino
+jupyter: capstone-cohort10        # needed for Python cells
+description: "One sentence shown under the title on the Blog page."
+execute:
+  echo: true                      # show the code; remove this line to hide it
+---
+
+<!--
+TEMPLATE for a new blog post. Quarto does not publish this folder because its name starts with `_`.
+Copy it to `blog/posts/YYYY-MM-DD-short-title/`, fill in the header above and replace this text.
+See "New blog post" in README.md.
+-->
+
+Write your text in Markdown. Python cells like this one run when the page is rendered:
+
+```{python}
+from capstone.topics import topic_map
+
+fig, skipped = topic_map("Droughts", height=400)
+fig
+```
+
+Prefer a Jupyter notebook? Put `index.ipynb` in the folder instead of `index.qmd`, with the same header
+in a "Raw" cell at the top (see `blog/posts/2026-10-27-california-precipitation/`).
+Quarto does not run notebooks, so run all cells and save before committing.
