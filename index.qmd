@@ -31,5 +31,4 @@ show_topic("El Niño")
 
 ::: {.callout-note}
 OpenStreetMap base with real NASA Landsat and precipitation layers (toggle top right).
-Markers and shaded areas are illustrative placeholders, not real data.
 :::

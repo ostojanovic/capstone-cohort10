@@ -30,8 +30,8 @@ their spatial and temporal resolution, how often they are updated, and their cur
 The results are published as an interactive website built with [Quarto](https://quarto.org) and Python.
 It has a map for each use case, a blog, and Jupyter notebooks with our analyses.
 
-> **Status:** early stage. The map currently shows real NASA satellite layers together with
-> *illustrative placeholder* markers and areas. These are not real data yet.
+> **Status:** early stage. The maps show real NASA satellite and precipitation layers. More sources
+> (cropland, drought index, El Niño index) are coming.
 
 ## Repository structure
 
