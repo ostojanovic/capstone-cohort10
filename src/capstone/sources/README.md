@@ -35,7 +35,7 @@ The **id** is the source's short name, in lowercase without spaces (for example 
 3. **Fill in `add_to_map`**: keep the pattern that fits (see the [table](#which-pattern)) and delete the others.
 4. **Register it** in `__init__.py`: add your file to the `import` line and `usdm_drought.SOURCE,` to the list.
 5. **Add its id to a topic** in `src/capstone/topics.py`, under `sources`. Add it to `shown` too, if it
-   should be switched on when the map opens. Once a topic has real data, delete its placeholder `examples`.
+   should be switched on when the map opens.
 6. **Check** with `quarto preview`: your layer should be in the layer box on the map, and your dataset on
    the Data sources page. Then commit and open a pull request as usual.
 
