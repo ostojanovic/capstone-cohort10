@@ -43,6 +43,7 @@ It has a map for each use case, a blog, and Jupyter notebooks with our analyses.
 ├── blog/
 │   ├── index.qmd        # blog listing page
 │   └── posts/           # one folder per post (index.qmd or index.ipynb)
+│       └── _template/   # copy this to add a new post
 ├── src/capstone/        # Python package used by the pages
 │   ├── sources/         # one file per data source: its details and how to draw it on the map
 │   │   └── _template.py # copy this to add a new source
@@ -98,8 +99,9 @@ quarto render     # build the full site into _site/
   and how to draw it on the map. To add one, copy `_template.py`. See
   [src/capstone/sources/README.md](src/capstone/sources/README.md).
 - **Maps**: `src/capstone/topics.py` lists which sources each use case shows. `index.qmd` only calls `show_topic(...)`.
-- **New blog post**: create a folder `blog/posts/YYYY-MM-DD-short-title/` with an `index.qmd` or
-  `index.ipynb` file. Copy the header of an existing post. It appears on the Blog page automatically.
+- **New blog post**: copy the template, `cp -r blog/posts/_template blog/posts/YYYY-MM-DD-short-title`,
+  then fill in its header and text. It appears on the Blog page automatically. For a notebook post, use
+  `index.ipynb` instead of `index.qmd` (see the template).
 - **Pages with Python code** need `jupyter: capstone-cohort10` in their header (see `index.qmd`). Otherwise
   Quarto may pick a Jupyter kernel from a different environment. For `.ipynb` files, select the
   "Python (capstone-cohort10)" kernel instead.
