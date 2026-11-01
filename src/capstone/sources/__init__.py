@@ -1,6 +1,6 @@
 """All data sources shown on the website. To add one, see `_template.py`."""
 
-from capstone.sources import gibs_hls_landsat, gibs_imerg_rate, gibs_landsat, imerg_monthly
+from capstone.sources import gibs_hls_landsat, gibs_imerg_rate, gibs_landsat, imerg_monthly, roni
 from capstone.sources.base import Source
 
 SOURCES: dict[str, Source] = {
@@ -10,5 +10,6 @@ SOURCES: dict[str, Source] = {
         gibs_hls_landsat.SOURCE,
         gibs_imerg_rate.SOURCE,
         imerg_monthly.SOURCE,
+        roni.SOURCE,
     ]
 }
