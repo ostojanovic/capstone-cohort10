@@ -54,8 +54,8 @@ TOPICS = {
         ),
         Topic(
             name="Droughts",
-            sources=["gibs_imerg_rate", "imerg_monthly"],
-            shown=["gibs_imerg_rate"],
+            sources=["gibs_imerg_rate", "imerg_monthly", "noaa_departure"],
+            shown=["gibs_imerg_rate", "noaa_departure"],
             planned=["Drought index data"],
             examples=_drought_examples,
         ),
