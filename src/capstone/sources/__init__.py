@@ -1,6 +1,6 @@
 """All data sources shown on the website. To add one, see `_template.py`."""
 
-from capstone.sources import gibs_hls_landsat, gibs_imerg_rate, gibs_landsat, imerg_monthly, mei_v2, oisst, psl_indices, roni, streamflow
+from capstone.sources import gibs_hls_landsat, gibs_imerg_rate, gibs_landsat, imerg_monthly, mei_v2, noaa_departure, oisst, psl_indices, roni, streamflow
 from capstone.sources.base import Source
 
 SOURCES: dict[str, Source] = {
@@ -15,5 +15,6 @@ SOURCES: dict[str, Source] = {
         psl_indices.SOURCE,
         oisst.SOURCE,
         streamflow.SOURCE,
+        noaa_departure.SOURCE,
     ]
 }
