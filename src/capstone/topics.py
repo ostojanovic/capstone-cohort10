@@ -35,9 +35,8 @@ TOPICS = {
         ),
         Topic(
             name="El Niño",
-            sources=["imerg_monthly", "gibs_imerg_rate"],
+            sources=["imerg_monthly", "gibs_imerg_rate", "roni"],
             shown=["imerg_monthly"],
-            planned=["Ocean / climate index data (e.g. ENSO index)"],
         ),
     ]
 }
@@ -51,6 +50,8 @@ def topic_map(name: str, height: int = 520) -> tuple[folium.Figure, list[str]]:
 
     skipped = []
     for source_id in topic.sources:
+        if SOURCES[source_id].add_to_map is None:  # e.g. an index, shown as a chart instead
+            continue
         try:
             SOURCES[source_id].add_to_map(m, source_id in topic.shown)
         except EarthdataLoginMissing:
@@ -81,6 +82,10 @@ def show_topic(name: str) -> None:
     topic = TOPICS[name]
     fig, _ = topic_map(name)  # missing sources are flagged on the map itself
     display(fig)
+
+    for s in (SOURCES[i] for i in topic.sources):
+        if s.chart is not None:
+            s.chart().show(renderer="notebook_connected")  # interactive chart that also works on the website
 
     text = f"**Data sources for {name}**\n\n{sources_table(topic.sources)}\n"
     if topic.planned:

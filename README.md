@@ -117,6 +117,10 @@ quarto render     # build the full site into _site/
   same build without publishing, so a red ❌ on a pull request means the site would not build. The build also
   fails when a page shows a Python error or a map as text, or a notebook has no outputs
   ([.github/check_site.py](.github/check_site.py)).
+- **Landsat updates**: the website is also republished monthly, which moves the Landsat map to the most recent
+  16 days of images, without re-running any Python. To change how often, edit the `cron` line in
+  [.github/workflows/refresh-landsat.yml](.github/workflows/refresh-landsat.yml). To update right away, open
+  **Actions → Publish website → Run workflow** and choose the `main` branch.
 
 ## Data sources
 
@@ -130,6 +134,8 @@ Download it from the original source.
 | HLS Landsat surface reflectance (HLSL30 v2.0), daily | NASA LP DAAC via [GIBS](https://nasa-gibs.github.io/gibs-api-docs/) | Agriculture | NASA open data policy. Cite Masek et al. |
 | IMERG precipitation rate | NASA GPM via [GIBS](https://nasa-gibs.github.io/gibs-api-docs/) | Droughts, El Niño | NASA open data policy |
 | IMERG monthly precipitation (GPM_3IMERGM v07) | [NASA GES DISC](https://disc.gsfc.nasa.gov/datasets/GPM_3IMERGM_07/summary) | Droughts, El Niño | NASA open data policy. Cite Huffman et al. |
+| Relative Oceanic Niño Index (RONI) v6 | [NOAA Climate Prediction Center](https://www.cpc.ncep.noaa.gov/products/analysis_monitoring/enso/roni/) | El Niño | NOAA open data. Credit NOAA CPC |
+| USGS daily streamflow at stream gauges | [USGS Water Data for the Nation](https://waterdata.usgs.gov/) | Not shown yet (for later analysis) | USGS public domain. Cite USGS NWIS |
 
 <!-- Add a row for every dataset you start using, including the provider's preferred citation. -->
 The full details of every dataset (access, resolution, update frequency, status) are on the website's
