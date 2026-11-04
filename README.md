@@ -117,6 +117,10 @@ quarto render     # build the full site into _site/
   same build without publishing, so a red ❌ on a pull request means the site would not build. The build also
   fails when a page shows a Python error or a map as text, or a notebook has no outputs
   ([.github/check_site.py](.github/check_site.py)).
+- **Landsat updates**: the website is also republished monthly, which moves the Landsat map to the most recent
+  16 days of images, without re-running any Python. To change how often, edit the `cron` line in
+  [.github/workflows/refresh-landsat.yml](.github/workflows/refresh-landsat.yml). To update right away, open
+  **Actions → Publish website → Run workflow** and choose the `main` branch.
 
 ## Data sources
 
