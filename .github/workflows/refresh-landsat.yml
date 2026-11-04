@@ -1,0 +1,33 @@
+# Republish the website on a schedule, so the Landsat map moves to the most recent images.
+#
+# To change how often: edit the `cron` line below (times are UTC). Some examples:
+#   "0 6 1 * *"     06:00 on the 1st of every month
+#   "0 6 * * 1"     06:00 every Monday
+#   "0 6 1,15 * *"  06:00 on the 1st and 15th of every month
+# Help with the format: https://crontab.guru
+#
+# This workflow only starts "Publish website" on `main`. It can't publish by itself, because scheduled
+# runs start from the default branch (`develop`), and only `main` is allowed to deploy to GitHub Pages.
+# The schedule is read from `develop`, so a change to the `cron` line works once it is merged there.
+#
+# GitHub pauses scheduled workflows after 60 days without commits in the repository.
+# If that happens, re-enable it in the Actions tab.
+
+name: Refresh Landsat images
+
+on:
+  schedule:
+    - cron: "0 6 1 * *"
+  workflow_dispatch:   # to try it by hand from the Actions tab
+
+permissions:
+  actions: write       # to start the publish workflow
+
+jobs:
+  republish:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Start "Publish website" on main
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh workflow run publish.yml --ref main --repo "$GITHUB_REPOSITORY"
