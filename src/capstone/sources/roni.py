@@ -12,7 +12,6 @@ from capstone.sources.base import Source
 URL = "https://www.cpc.ncep.noaa.gov/data/indices/RONI.ascii.txt"
 SEASONS = ["DJF", "JFM", "FMA", "MAM", "AMJ", "MJJ", "JJA", "JAS", "ASO", "SON", "OND", "NDJ"]
 THRESHOLD = 0.5        # °C. Above +0.5 is a warm (El Niño) season, below -0.5 a cold (La Niña) season
-HIGHLIGHT_YEAR = 2026
 COLOURS = {"Warm (≥ +0.5 °C)": "#c0392b", "Neutral": "#b0b0b0", "Cold (≤ −0.5 °C)": "#2471a3"}
 
 
@@ -27,7 +26,7 @@ def load() -> pd.DataFrame:
 
 
 def chart() -> go.Figure:
-    """Timeline of RONI from 1950 to the latest season, with the highlighted year shaded."""
+    """Timeline of RONI from 1950 to the latest season, with the latest year shaded (taken from the data)."""
     df = load()
     df["phase"] = "Neutral"
     df.loc[df["anomaly"] >= THRESHOLD, "phase"] = "Warm (≥ +0.5 °C)"
@@ -44,16 +43,15 @@ def chart() -> go.Figure:
     for y in (THRESHOLD, -THRESHOLD):
         fig.add_hline(y=y, line_dash="dot", line_color="grey", line_width=1)
 
+    latest_year = df["year"].iloc[-1]
     fig.add_vrect(
-        x0=f"{HIGHLIGHT_YEAR}-01-01", x1=f"{HIGHLIGHT_YEAR}-12-31", fillcolor="#f5b041", opacity=0.6,
-        line_width=0, layer="below", annotation_text=str(HIGHLIGHT_YEAR), annotation_position="top left",
+        x0=f"{latest_year}-01-01", x1=f"{latest_year}-12-31", fillcolor="#f5b041", opacity=0.6,
+        line_width=0, layer="below", annotation_text=str(latest_year), annotation_position="top left",
     )
-    first, last = df.iloc[0], df.iloc[-1]
     fig.update_layout(
-        title=f"Relative Oceanic Niño Index (RONI), {first['season']} {first['year']} to "
-              f"{last['season']} {last['year']}",
-        yaxis_title="Anomaly (°C)", bargap=0, height=420,
-        legend=dict(orientation="h", y=-0.15), margin=dict(t=60, b=40),
+        title=f"Relative Oceanic Niño Index ({df['year'].iloc[0]} to Present)",
+        yaxis_title="Difference from average (°C)", bargap=0, height=420,
+        legend=dict(orientation="h", y=-0.15), margin=dict(t=60, b=40, l=70, r=70),  # equal sides: plot centred
     )
     return fig
 
@@ -66,7 +64,7 @@ SOURCE = Source(
     access="Plain text file download, no login",
     spatial_resolution="Single index for the Niño 3.4 region (5°N–5°S, 120°–170°W)",
     temporal_coverage="1950–present, 3-month running seasons",
-    update_frequency="Monthly, by the 5th of each month",
+    update_frequency="Monthly",
     status="Active",
     license="NOAA open data. Credit: NOAA Climate Prediction Center",
     chart=chart,

@@ -131,6 +131,8 @@ Download it from the original source.
 | IMERG precipitation rate | NASA GPM via [GIBS](https://nasa-gibs.github.io/gibs-api-docs/) | Droughts, El Niño | NASA open data policy |
 | IMERG monthly precipitation (GPM_3IMERGM v07) | [NASA GES DISC](https://disc.gsfc.nasa.gov/datasets/GPM_3IMERGM_07/summary) | Droughts, El Niño | NASA open data policy. Cite Huffman et al. |
 | Relative Oceanic Niño Index (RONI) v6 | [NOAA Climate Prediction Center](https://www.cpc.ncep.noaa.gov/products/analysis_monitoring/enso/roni/) | El Niño | NOAA open data. Credit NOAA CPC |
+| Multivariate ENSO Index v2 (MEI.v2) | [NOAA PSL](https://psl.noaa.gov/enso/mei/) | El Niño | NOAA open data. Cite Wolter & Timlin; Zhang et al. (2019) |
+| Climate Indices (about 40 monthly series, e.g. Niño regions, SOI, PDO, NAO) | [NOAA PSL](https://psl.noaa.gov/data/climateindices/list/) | El Niño | NOAA open data. Credit NOAA PSL and the original provider of each index |
 
 <!-- Add a row for every dataset you start using, including the provider's preferred citation. -->
 The full details of every dataset (access, resolution, update frequency, status) are on the website's
