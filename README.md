@@ -117,6 +117,10 @@ quarto render     # build the full site into _site/
   same build without publishing, so a red ❌ on a pull request means the site would not build. The build also
   fails when a page shows a Python error or a map as text, or a notebook has no outputs
   ([.github/check_site.py](.github/check_site.py)).
+- **Landsat updates**: the website is also republished monthly, which moves the Landsat map to the most recent
+  16 days of images, without re-running any Python. To change how often, edit the `cron` line in
+  [.github/workflows/refresh-landsat.yml](.github/workflows/refresh-landsat.yml). To update right away, open
+  **Actions → Publish website → Run workflow** and choose the `main` branch.
 
 ## Data sources
 
@@ -133,6 +137,7 @@ Download it from the original source.
 | Relative Oceanic Niño Index (RONI) v6 | [NOAA Climate Prediction Center](https://www.cpc.ncep.noaa.gov/products/analysis_monitoring/enso/roni/) | El Niño | NOAA open data. Credit NOAA CPC |
 | Multivariate ENSO Index v2 (MEI.v2) | [NOAA PSL](https://psl.noaa.gov/enso/mei/) | El Niño | NOAA open data. Cite Wolter & Timlin; Zhang et al. (2019) |
 | Climate Indices (about 40 monthly series, e.g. Niño regions, SOI, PDO, NAO) | [NOAA PSL](https://psl.noaa.gov/data/climateindices/list/) | El Niño | NOAA open data. Credit NOAA PSL and the original provider of each index |
+| USGS daily streamflow at stream gauges | [USGS Water Data for the Nation](https://waterdata.usgs.gov/) | Not shown yet (for later analysis) | USGS public domain. Cite USGS NWIS |
 
 <!-- Add a row for every dataset you start using, including the provider's preferred citation. -->
 The full details of every dataset (access, resolution, update frequency, status) are on the website's
