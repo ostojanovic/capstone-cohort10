@@ -2,7 +2,7 @@
 
 from dataclasses import dataclass, field
 import folium
-from IPython.display import Markdown, display
+from IPython.display import HTML, Markdown, display
 
 from capstone.earthdata import EarthdataLoginMissing
 from capstone.sources import SOURCES
@@ -16,6 +16,8 @@ class Topic:
     sources: list[str]                 # source ids (see capstone/sources), drawn in this order
     shown: list[str]                   # the sources that are switched on when the map opens
     planned: list[str] = field(default_factory=list)  # sources we still want to add
+    center: tuple[float, float] = US_CENTER  # where the map opens: (latitude, longitude)
+    zoom: int = 4                            # how far in the map opens: lower shows more of the world
 
 
 TOPICS = {
@@ -29,24 +31,41 @@ TOPICS = {
         ),
         Topic(
             name="Droughts",
-            sources=["gibs_imerg_rate", "imerg_monthly"],
-            shown=["gibs_imerg_rate"],
+            sources=["gibs_imerg_rate", "imerg_monthly", "noaa_departure"],
+            shown=["gibs_imerg_rate", "noaa_departure"],
             planned=["Drought index data"],
         ),
         Topic(
             name="El Niño",
-            sources=["imerg_monthly", "gibs_imerg_rate", "roni"],
-            shown=["imerg_monthly"],
+            sources=["imerg_monthly", "gibs_imerg_rate", "oisst", "roni", "mei_v2", "psl_indices"],
+            shown=["oisst"],  # opens with just the sea surface temperature playing; precipitation can be ticked on
+            center=(25, -140),  # zoomed out to show the Pacific and the US
+            zoom=2,
         ),
     ]
 }
+
+
+# The box listing the map's layers: smaller than folium's default, in the website's font. ".leaflet-container" in
+# front makes these rules win over Leaflet's own, which load later.
+LAYER_LIST_STYLE = """
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Source+Sans+Pro:wght@400;600&display=swap">
+<style>
+    .leaflet-container .leaflet-control-layers-expanded { padding: 4px 8px 4px 6px; }
+    .leaflet-container .leaflet-control-layers, .leaflet-container .leaflet-control-layers label {
+        font-family: "Source Sans Pro", "Helvetica Neue", Arial, sans-serif; font-size: 13px; line-height: 1.4; }
+    .leaflet-container .leaflet-control-layers label { margin: 0; }
+    .leaflet-container .leaflet-control-layers-selector { margin: 0 5px 0 0; vertical-align: -1px; }
+    .leaflet-container .leaflet-control-layers-separator { margin: 3px -8px 3px -6px; }
+</style>
+"""
 
 
 def topic_map(name: str, height: int = 520) -> tuple[folium.Figure, list[str]]:
     """Build the interactive map for one topic. Also returns the sources that could not be loaded."""
     topic = TOPICS[name]
     fig = folium.Figure(width="100%", height=f"{height}px")
-    m = folium.Map(location=US_CENTER, zoom_start=4, tiles="OpenStreetMap").add_to(fig)
+    m = folium.Map(location=topic.center, zoom_start=topic.zoom, tiles="OpenStreetMap").add_to(fig)
 
     skipped = []
     for source_id in topic.sources:
@@ -58,6 +77,7 @@ def topic_map(name: str, height: int = 520) -> tuple[folium.Figure, list[str]]:
             skipped.append(source_id)
 
     folium.LayerControl(collapsed=False, position="topright").add_to(m)
+    fig.header.add_child(folium.Element(LAYER_LIST_STYLE))
     if skipped:
         names = ", ".join(SOURCES[i].name for i in skipped)
         m.get_root().html.add_child(folium.Element(
@@ -85,7 +105,23 @@ def show_topic(name: str) -> None:
 
     for s in (SOURCES[i] for i in topic.sources):
         if s.chart is not None:
-            s.chart().show(renderer="notebook_connected")  # interactive chart that also works on the website
+            chart = s.chart()
+            chart.update_layout(  # same look for every chart: plain white background, centred title
+                template="plotly_white", plot_bgcolor="white", paper_bgcolor="white",
+                title_x=0.5, title_xanchor="center", title_xref="paper",  # centred over the plot area
+                legend_x=0.5, legend_xanchor="center",  # legend centred under the chart
+                # same font as the website's text, and one title size for every chart
+                font_family='"Source Sans Pro", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, '
+                            'sans-serif',
+                title_font_size=18,
+            )
+            chart.update_yaxes(zeroline=False)  # the 0 line looks like the other grid lines
+            chart.show(renderer="notebook_connected", config={"responsive": True})  # fills the page width
+            # A chart on a hidden tab is drawn at a default 700 px wide. This redraws it at the full page
+            # width when its tab is opened, so it sits in the middle of the page.
+            display(HTML("<script>if (!window.resizeOnTabOpen) { window.resizeOnTabOpen = true; "
+                         "document.addEventListener('shown.bs.tab', () => window.dispatchEvent(new Event('resize'))); }"
+                         "</script>"))
 
     text = f"**Data sources for {name}**\n\n{sources_table(topic.sources)}\n"
     if topic.planned:
