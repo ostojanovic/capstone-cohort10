@@ -9,7 +9,9 @@ Each file has two parts:
 
 1. **`SOURCE`**: a description of the dataset: provider, link, how we access it, resolution, update frequency,
    status and license. It appears on the website's **Data sources** page and in the table under each map.
-2. **`add_to_map`**: the code that gets the data and draws it on the map.
+2. **`add_to_map`**: the code that gets the data and draws it on the map. For a table or time series, such as
+   an index with one value per month, use **`chart`** instead: it returns a chart that is shown under the map
+   (pattern E [below](#which-pattern)).
 
 The files are connected like this:
 
@@ -33,11 +35,12 @@ The **id** is the source's short name, in lowercase without spaces (for example 
    ```
 2. **Fill in `SOURCE`** at the bottom of the file. For `status`, see [below](#status).
 3. **Fill in `add_to_map`**: keep the pattern that fits (see the [table](#which-pattern)) and delete the others.
+   For a table or time series (pattern E), fill in `load()` and `chart()` instead and delete `add_to_map`.
 4. **Register it** in `__init__.py`: add your file to the `import` line and `usdm_drought.SOURCE,` to the list.
 5. **Add its id to a topic** in `src/capstone/topics.py`, under `sources`. Add it to `shown` too, if it
    should be switched on when the map opens.
-6. **Check** with `quarto preview`: your layer should be in the layer box on the map, and your dataset on
-   the Data sources page. Then commit and open a pull request as usual.
+6. **Check** with `quarto preview`: your layer should be in the layer box on the map (or, for pattern E, your
+   chart under the map), and your dataset on the Data sources page. Then commit and open a pull request as usual.
 
 ## Which pattern?
 
@@ -47,8 +50,14 @@ The **id** is the source's short name, in lowercase without spaces (for example 
 | A WMS service (common for USDA, NOAA, USGS) | B | — | No, images only |
 | Vector files (GeoJSON, shapefile) | C | — | Yes |
 | NASA Earthdata files (needs login) | D | `imerg_monthly.py` | Yes |
+| A table or time series (CSV, plain text, API), e.g. an index by month | E: a chart under the map | `roni.py` | Yes |
 
 A and B are quickest. With C and D you have the actual values, so you can also select regions, average or compare years.
+
+**Tables and time series (pattern E)** are loaded with pandas in a `load()` function, which returns a DataFrame
+you can also use in a notebook. `chart()` turns it into a plotly chart, and `SOURCE` gets `chart=chart` instead
+of `add_to_map=add_to_map`. The website gives every chart the same font, background and width. For an API, put
+the query parameters in a dict, as `load()` in `streamflow.py` does.
 
 **NASA Earthdata (pattern D)** needs your login in `.env` (see [CONTRIBUTING.md](../../../CONTRIBUTING.md#24-add-your-logins-only-for-nasa-data)).
 Files are downloaded once into `data/raw/`. If the website is built without a login, the layer is left out

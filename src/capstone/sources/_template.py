@@ -34,6 +34,39 @@ def add_to_map(m: folium.Map, show: bool) -> None:
     # earthdata.add_raster(m, values, name="Layer name", caption="Units", cmap="viridis", show=show)
 
 
+# E) The provider publishes a table or time series (CSV, plain text or an API), e.g. an index with one value per
+#    month. It is shown as a chart under the map instead of a map layer: delete add_to_map above, uncomment
+#    load() and chart() below, and in SOURCE replace `add_to_map=add_to_map` with `chart=chart`.
+#    Working example: roni.py. For an API with query parameters, see load() in streamflow.py.
+#
+# import pandas as pd
+# import plotly.graph_objects as go
+#
+# URL = "https://.../data.csv"  # the file to download; for an API, the address without the part after "?"
+#
+#
+# def load() -> pd.DataFrame:
+#     """Download the data: one row per date. Also useful on its own in a notebook."""
+#     df = pd.read_csv(URL)  # plain text with spaces between columns: pd.read_csv(URL, sep=r"\s+")
+#     # For an API, put the query parameters in a dict, so others can see what is asked for:
+#     # import io, requests
+#     # response = requests.get(URL, params={"state": "Washington", "format": "csv"}, timeout=60)
+#     # df = pd.read_csv(io.StringIO(response.text))
+#     df["date"] = pd.to_datetime(df["date_column"])
+#     return df.rename(columns={"value_column": "value"})[["date", "value"]]
+#
+#
+# def chart() -> go.Figure:
+#     """The chart shown under the map. The website sets the font, background and width, so only the data,
+#     title and axis labels are needed here."""
+#     df = load()
+#     fig = go.Figure()
+#     fig.add_scatter(x=df["date"], y=df["value"], mode="lines", name="Dataset name",
+#                     hovertemplate="%{x|%b %Y}: %{y:.2f} units<extra></extra>")
+#     fig.update_layout(title="Chart title", yaxis_title="Units", height=420)
+#     return fig
+
+
 SOURCE = Source(
     id="my_source",                  # unique, lowercase, no spaces
     name="Dataset name",
@@ -45,6 +78,6 @@ SOURCE = Source(
     update_frequency="e.g. Weekly on Thursdays",
     status="e.g. Active, At risk, Migrating, Discontinued",
     license="Terms of use and how the provider wants to be cited",
-    add_to_map=add_to_map,
+    add_to_map=add_to_map,           # pattern E: chart=chart instead
     notes="Anything surprising: broken links, login problems, format quirks, planned changes",
 )
