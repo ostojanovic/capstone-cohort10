@@ -16,6 +16,8 @@ class Topic:
     sources: list[str]                 # source ids (see capstone/sources), drawn in this order
     shown: list[str]                   # the sources that are switched on when the map opens
     planned: list[str] = field(default_factory=list)  # sources we still want to add
+    center: tuple[float, float] = US_CENTER  # where the map opens: (latitude, longitude)
+    zoom: int = 4                            # how far in the map opens: lower shows more of the world
 
 
 TOPICS = {
@@ -35,18 +37,35 @@ TOPICS = {
         ),
         Topic(
             name="El Niño",
-            sources=["imerg_monthly", "gibs_imerg_rate", "roni", "mei_v2", "psl_indices"],
-            shown=["imerg_monthly"],
+            sources=["imerg_monthly", "gibs_imerg_rate", "oisst", "roni", "mei_v2", "psl_indices"],
+            shown=["oisst"],  # opens with just the sea surface temperature playing; precipitation can be ticked on
+            center=(25, -140),  # zoomed out to show the Pacific and the US
+            zoom=2,
         ),
     ]
 }
+
+
+# The box listing the map's layers: smaller than folium's default, in the website's font. ".leaflet-container" in
+# front makes these rules win over Leaflet's own, which load later.
+LAYER_LIST_STYLE = """
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Source+Sans+Pro:wght@400;600&display=swap">
+<style>
+    .leaflet-container .leaflet-control-layers-expanded { padding: 4px 8px 4px 6px; }
+    .leaflet-container .leaflet-control-layers, .leaflet-container .leaflet-control-layers label {
+        font-family: "Source Sans Pro", "Helvetica Neue", Arial, sans-serif; font-size: 13px; line-height: 1.4; }
+    .leaflet-container .leaflet-control-layers label { margin: 0; }
+    .leaflet-container .leaflet-control-layers-selector { margin: 0 5px 0 0; vertical-align: -1px; }
+    .leaflet-container .leaflet-control-layers-separator { margin: 3px -8px 3px -6px; }
+</style>
+"""
 
 
 def topic_map(name: str, height: int = 520) -> tuple[folium.Figure, list[str]]:
     """Build the interactive map for one topic. Also returns the sources that could not be loaded."""
     topic = TOPICS[name]
     fig = folium.Figure(width="100%", height=f"{height}px")
-    m = folium.Map(location=US_CENTER, zoom_start=4, tiles="OpenStreetMap").add_to(fig)
+    m = folium.Map(location=topic.center, zoom_start=topic.zoom, tiles="OpenStreetMap").add_to(fig)
 
     skipped = []
     for source_id in topic.sources:
@@ -58,6 +77,7 @@ def topic_map(name: str, height: int = 520) -> tuple[folium.Figure, list[str]]:
             skipped.append(source_id)
 
     folium.LayerControl(collapsed=False, position="topright").add_to(m)
+    fig.header.add_child(folium.Element(LAYER_LIST_STYLE))
     if skipped:
         names = ", ".join(SOURCES[i].name for i in skipped)
         m.get_root().html.add_child(folium.Element(

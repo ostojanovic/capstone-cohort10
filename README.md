@@ -137,6 +137,7 @@ Download it from the original source.
 | Relative Oceanic Niño Index (RONI) v6 | [NOAA Climate Prediction Center](https://www.cpc.ncep.noaa.gov/products/analysis_monitoring/enso/roni/) | El Niño | NOAA open data. Credit NOAA CPC |
 | Multivariate ENSO Index v2 (MEI.v2) | [NOAA PSL](https://psl.noaa.gov/enso/mei/) | El Niño | NOAA open data. Cite Wolter & Timlin; Zhang et al. (2019) |
 | Climate Indices (about 40 monthly series, e.g. Niño regions, SOI, PDO, NAO) | [NOAA PSL](https://psl.noaa.gov/data/climateindices/list/) | El Niño | NOAA open data. Credit NOAA PSL and the original provider of each index |
+| Optimum Interpolation SST (OISST) v2.1, difference from 1971–2000 average | [NOAA NCEI, via NOAA PSL](https://psl.noaa.gov/data/gridded/data.noaa.oisst.v2.highres.html) | El Niño | NOAA open data. Cite Huang et al. (2021) |
 | USGS daily streamflow at stream gauges | [USGS Water Data for the Nation](https://waterdata.usgs.gov/) | Not shown yet (for later analysis) | USGS public domain. Cite USGS NWIS |
 
 <!-- Add a row for every dataset you start using, including the provider's preferred citation. -->
