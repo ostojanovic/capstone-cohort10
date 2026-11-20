@@ -2,7 +2,7 @@
 
 from dataclasses import dataclass, field
 import folium
-from IPython.display import Markdown, display
+from IPython.display import HTML, Markdown, display
 
 from capstone.earthdata import EarthdataLoginMissing
 from capstone.sources import SOURCES
@@ -35,7 +35,7 @@ TOPICS = {
         ),
         Topic(
             name="El Niño",
-            sources=["imerg_monthly", "gibs_imerg_rate", "roni"],
+            sources=["imerg_monthly", "gibs_imerg_rate", "roni", "mei_v2", "psl_indices"],
             shown=["imerg_monthly"],
         ),
     ]
@@ -85,7 +85,23 @@ def show_topic(name: str) -> None:
 
     for s in (SOURCES[i] for i in topic.sources):
         if s.chart is not None:
-            s.chart().show(renderer="notebook_connected")  # interactive chart that also works on the website
+            chart = s.chart()
+            chart.update_layout(  # same look for every chart: plain white background, centred title
+                template="plotly_white", plot_bgcolor="white", paper_bgcolor="white",
+                title_x=0.5, title_xanchor="center", title_xref="paper",  # centred over the plot area
+                legend_x=0.5, legend_xanchor="center",  # legend centred under the chart
+                # same font as the website's text, and one title size for every chart
+                font_family='"Source Sans Pro", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, '
+                            'sans-serif',
+                title_font_size=18,
+            )
+            chart.update_yaxes(zeroline=False)  # the 0 line looks like the other grid lines
+            chart.show(renderer="notebook_connected", config={"responsive": True})  # fills the page width
+            # A chart on a hidden tab is drawn at a default 700 px wide. This redraws it at the full page
+            # width when its tab is opened, so it sits in the middle of the page.
+            display(HTML("<script>if (!window.resizeOnTabOpen) { window.resizeOnTabOpen = true; "
+                         "document.addEventListener('shown.bs.tab', () => window.dispatchEvent(new Event('resize'))); }"
+                         "</script>"))
 
     text = f"**Data sources for {name}**\n\n{sources_table(topic.sources)}\n"
     if topic.planned:
