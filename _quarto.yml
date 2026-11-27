@@ -8,7 +8,10 @@ project:
 
 website:
   title: "US Agriculture & Climate Data Map"
+  favicon: images/logo.svg
   navbar:
+    logo: images/logo.svg
+    logo-alt: "Site logo"
     left:
       - href: index.qmd
         text: Map
@@ -18,12 +21,17 @@ website:
         text: Blog
       - href: about.qmd
         text: About
+    right:
+      - icon: github
+        href: https://github.com/ostojanovic/capstone-cohort10
+        aria-label: Source code on GitHub
   page-footer:
-    center: "Climatebase Fellowship · Cohort 10 capstone · For educational and research purposes only · Content [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/)"
+    left: "Climatebase Fellowship, Cohort 10 capstone"
+    right: "For education and research only · Content [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/)"
 
 format:
   html:
-    theme: cosmo
+    theme: [cosmo, styles/theme.scss]
 
 execute:
   freeze: auto   # only re-run code when a page's source changes

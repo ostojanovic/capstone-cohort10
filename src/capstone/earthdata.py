@@ -70,7 +70,7 @@ KEY_STYLE = """
     .colour-key-box { padding: 5px 9px 2px 9px; background: #fff; border-radius: 5px;
         box-shadow: 0 1px 5px rgba(0, 0, 0, 0.4); }
     .colour-key { min-width: 200px; color: #333; line-height: 1.3;
-        font-family: "Source Sans Pro", "Helvetica Neue", Arial, sans-serif; }
+        font-family: "Roboto", "Helvetica Neue", Arial, sans-serif; }
     .colour-key .caption { font-size: 12px; margin-bottom: 3px; white-space: nowrap; }
     .colour-key .bar { height: 8px; }
     .colour-key .ticks { position: relative; height: 15px; font-size: 11px; }
