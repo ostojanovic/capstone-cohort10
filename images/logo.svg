@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" role="img" aria-label="Logo">
+  <rect width="32" height="32" rx="7" fill="#182d78"/>
+  <g fill="none" stroke="#ffffff" stroke-width="2.2" stroke-linecap="round">
+    <path d="M7 11.5c2.2-2.2 4.4 2.2 6.6 0s4.4 2.2 6.6 0 4.4 2.2 4.8 0"/>
+    <path d="M7 17c2.2-2.2 4.4 2.2 6.6 0s4.4 2.2 6.6 0 4.4 2.2 4.8 0" opacity="0.75"/>
+    <path d="M7 22.5c2.2-2.2 4.4 2.2 6.6 0s4.4 2.2 6.6 0 4.4 2.2 4.8 0" opacity="0.5"/>
+  </g>
+</svg>

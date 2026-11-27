@@ -199,7 +199,7 @@ class WeekPlayer(folium.MacroElement):
             <style>
                 .week-player { padding: 5px 9px 2px 5px; color: #333; line-height: 1.3;
                     background: rgba(255, 255, 255, 0.92); border-radius: 5px; box-shadow: 0 1px 5px rgba(0,0,0,0.4);
-                    font-family: "Source Sans Pro", "Helvetica Neue", Arial, sans-serif; }
+                    font-family: "Roboto", "Helvetica Neue", Arial, sans-serif; }
                 .week-player .top { display: flex; align-items: center; gap: 7px; margin-bottom: 5px; }
                 .week-player .title { font-size: 13px; font-weight: 600; white-space: nowrap; }
                 .week-player .dates { font-size: 13px; font-variant-numeric: tabular-nums; }
@@ -308,7 +308,7 @@ def add_to_map(m: folium.Map, show: bool) -> None:
     folium.Marker(  # a small label just above the box
         location=[n, (w + e) / 2],
         icon=folium.DivIcon(
-            html='<div style="font: 13px \'Source Sans Pro\', Arial, sans-serif; color: #333; text-align: center; '
+            html='<div style="font: 13px Roboto, Arial, sans-serif; color: #333; text-align: center; '
                  'white-space: nowrap;">Niño 3.4</div>',
             icon_size=(60, 16), icon_anchor=(30, 18),
         ),

@@ -1,5 +1,7 @@
 ---
 title: "US agriculture & climate data map"
+subtitle: "Public climate and Earth observation data for three questions: farming, drought and El Niño"
+title-block-banner: true
 jupyter: capstone-cohort10
 ---
 
@@ -29,6 +31,6 @@ show_topic("El Niño")
 
 :::
 
-::: {.callout-note}
-OpenStreetMap base with real NASA Landsat and precipitation layers (toggle top right).
+::: {.map-note}
+Base map © OpenStreetMap contributors. Switch layers on and off in the box at the top right of each map.
 :::
