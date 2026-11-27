@@ -25,7 +25,7 @@ TOPICS = {
     for t in [
         Topic(
             name="Agriculture",
-            sources=["gibs_landsat", "gibs_hls_landsat"],
+            sources=["gibs_landsat", "gibs_hls_landsat", "nass_yields"],
             shown=["gibs_hls_landsat"],
             planned=["Cropland data"],
         ),
