@@ -49,11 +49,11 @@ TOPICS = {
 # The box listing the map's layers: smaller than folium's default, in the website's font. ".leaflet-container" in
 # front makes these rules win over Leaflet's own, which load later.
 LAYER_LIST_STYLE = """
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Source+Sans+Pro:wght@400;600&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap">
 <style>
     .leaflet-container .leaflet-control-layers-expanded { padding: 4px 8px 4px 6px; }
     .leaflet-container .leaflet-control-layers, .leaflet-container .leaflet-control-layers label {
-        font-family: "Source Sans Pro", "Helvetica Neue", Arial, sans-serif; font-size: 13px; line-height: 1.4; }
+        font-family: "Roboto", "Helvetica Neue", Arial, sans-serif; font-size: 13px; line-height: 1.4; }
     .leaflet-container .leaflet-control-layers label { margin: 0; }
     .leaflet-container .leaflet-control-layers-selector { margin: 0 5px 0 0; vertical-align: -1px; }
     .leaflet-container .leaflet-control-layers-separator { margin: 3px -8px 3px -6px; }
@@ -82,8 +82,9 @@ def topic_map(name: str, height: int = 520) -> tuple[folium.Figure, list[str]]:
         names = ", ".join(SOURCES[i].name for i in skipped)
         m.get_root().html.add_child(folium.Element(
             '<div style="position:absolute; bottom:24px; left:10px; z-index:1000; max-width:60%;'
-            ' padding:6px 10px; background:#fff3cd; border:1px solid #c8963c; border-radius:4px;'
-            f' font:13px sans-serif;">⚠️ Not shown (no Earthdata login when this page was built): {names}</div>'
+            ' padding:6px 10px; background:#fff; border-left:3px solid #182d78; border-radius:2px;'
+            f' font:13px Roboto, Arial, sans-serif; color:#22252d;">Not shown (no Earthdata login when this page was'
+            f' built): {names}</div>'
         ))
     return fig, skipped
 
@@ -110,12 +111,15 @@ def show_topic(name: str) -> None:
                 template="plotly_white", plot_bgcolor="white", paper_bgcolor="white",
                 title_x=0.5, title_xanchor="center", title_xref="paper",  # centred over the plot area
                 legend_x=0.5, legend_xanchor="center",  # legend centred under the chart
-                # same font as the website's text, and one title size for every chart
-                font_family='"Source Sans Pro", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, '
-                            'sans-serif',
+                # same fonts and colours as the website: Roboto for text, Poppins in navy for the title
+                font_family='Roboto, -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif',
+                font_color="#22252d",
+                title_font_family="Poppins, Roboto, Arial, sans-serif", title_font_color="#182d78",
                 title_font_size=18,
+                hoverlabel=dict(bgcolor="white", bordercolor="#d9d9d9", font_family="Roboto, Arial, sans-serif"),
             )
-            chart.update_yaxes(zeroline=False)  # the 0 line looks like the other grid lines
+            chart.update_xaxes(gridcolor="#eeeeee", linecolor="#d9d9d9")
+            chart.update_yaxes(zeroline=False, gridcolor="#eeeeee")  # the 0 line looks like the other grid lines
             chart.show(renderer="notebook_connected", config={"responsive": True})  # fills the page width
             # A chart on a hidden tab is drawn at a default 700 px wide. This redraws it at the full page
             # width when its tab is opened, so it sits in the middle of the page.
